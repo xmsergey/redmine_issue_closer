@@ -1,11 +1,15 @@
 ru:
-  settings_h1: Управление статусами задач
-  setting_auto_close: Автоматическое закрытие задач
+  settings_caption: Управление статусами задач
+  setting_auto_close: Автоматическая обработка статусов задач
   setting_issues_status_from: Искать задачи со статусом
   setting_issues_status_to: Установить статус
-  setting_auto_close_after_days: Менять статус, если прошло дней
-  settings_manual_change: Поиск и ручное изменение статуса
+  set_status_to: установить в 
+  setting_auto_close_after_days: Менять статус, если прошло дней (значение по умолчанию)
+  setting_auto_close_after_days_short: период
+  settings_manual_change: Панель управления
   make_new_status: Сменить статус
+  find_statuses_caption: Изменение статусов
+  no_action: Без изменения
   action: Действие
   project: Проект
   subject: Тема
@@ -13,7 +17,7 @@ ru:
   status_from: Текущий статус
   status_to: Новый статус
   issues_count: Задач всего
-  issues_to_be_changed: Найдено задач для изменения  
+  issues_to_be_changed: Найдено задач для изменения
   helpers:
     page_entries_info:
       more_pages:

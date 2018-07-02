@@ -1,11 +1,15 @@
 en:
-  settings_h1: Issue management
-  setting_auto_close: Automatic issue closing
+  settings_caption: Issue management
+  setting_auto_close: Automatic issue status processing
   setting_issues_status_from: Find status
   setting_issues_status_to: Set status to
-  setting_auto_close_after_days: Wait before change status, days
-  settings_manual_change: Manually change
+  set_status_to: set status to
+  setting_auto_close_after_days: Wait before change status, days (default)
+  setting_auto_close_after_days_short: wait days
+  settings_manual_change: Control panel
   make_new_status: Change status
+  find_statuses_caption: Statuses to be changed
+  no_action: No action
   action: Action
   project: Project
   subject: Subject

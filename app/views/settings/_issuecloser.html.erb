@@ -1,28 +1,34 @@
-<h1><%= t :settings_h1 %></h1>
+<h1><%= t :settings_caption %></h1>
+<hr>
 <div class="tabular settings">
-	<p>
-		<%= setting_label(:auto_close) %>
-		<%= check_box_tag('settings[auto_close]', true, @settings[:auto_close]) %>
-	</p>
-	<p>
-		<% statuses = IssueStatus.where('is_closed=?', false).map { |s| [s.name, s.id] } %>
-		<%= setting_label(:issues_status_from) %>
-		<%= select_tag('settings[issues_status_from]',
-		options_for_select(statuses, @settings[:issues_status_from])) %>
-	</p>
-	<p>
-		<% statuses = IssueStatus.where('is_closed=?', true).map { |s| [s.name, s.id] } %>
-		<%= setting_label(:issues_status_to) %>
-		<%= select_tag('settings[issues_status_to]',
-		options_for_select(statuses, @settings[:issues_status_to])) %>
-	</p>
-	<p>
-		<%= setting_label(:auto_close_after_days) %>
-		<%= text_field_tag "settings[auto_close_after_days]", @settings[:auto_close_after_days] %>
-	</p>
-	<hr>
-	<p>
-		<a href=/issuecloser><%= t :settings_manual_change %></a>
-	</p>
+    <p>
+        <%= setting_label(:auto_close) %>
+        <%= check_box_tag('settings[auto_close]', true, @settings[:auto_close]) %>
+    </p>
+    <p>
+        <%= setting_label(:auto_close_after_days) %>
+        <%= text_field_tag "settings[auto_close_after_days]", @settings[:auto_close_after_days], style:"width:30px"%>
+    </p>
+    <hr>
+    <h2><%= t :find_statuses_caption %></h2>
+    <p>
+        <% statuses_from = IssueStatus.all.map { |s| [s.name, s.id] } %>
+        <%statuses_from.each do |s| %>
+        <% statuses_to = [["#{t :no_action}",0]] + statuses_from - [s] %>
+        <label>"<%= s[0] %>"</label>
+        <%= t :set_status_to%>
+        <%= select_tag("settings[issues_status_from_#{s[1]}]",
+        options_for_select(statuses_to, @settings["issues_status_from_#{s[1]}"])) %>
+        <%= t :setting_auto_close_after_days_short %>
+        <%= text_field_tag "settings[auto_close_after_days_#{s[1]}]", @settings["auto_close_after_days_#{s[1]}"], style:"width:30px" %>
+        <br>
+        <%end%>
+    </p>
+
+    <hr>
+
+    <p>
+        <label> <a href=/issuecloser><%= t :settings_manual_change %></a> </label>
+    </p>
 </div>
 
