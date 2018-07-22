@@ -1,7 +1,8 @@
 <h1><%= t :settings_h1 %></h1>
 <hr>
-<%=I18n.t 'issues_count'%>:<%= @issues_all_c.count%>
+<%=I18n.t 'issues_count'%>:<%= @issues_all_c%>
 <br>
+
 <%=I18n.t 'issues_to_be_changed'%>:<%= @issues_to_change_c%>
 <br>
 <br>
@@ -14,22 +15,25 @@
 			<th><%=I18n.t 'subject'%></th>
 			<th><%=I18n.t 'status_from'%></th>
 			<th><%=I18n.t 'status_to'%></th>
+			<th><%=I18n.t 'wait_days'%></th>
 			<th><%=I18n.t 'action'%></th>
 		</tr>
 	</thead>
 	<tbody>
-		<% @issues_to_change_paginated.each do |i|%>
+		<% @issues.each do |i|%>
 		<tr>
-			<td><a href='/issues/<%= i.id%>'><%= i.id%></a></td>
+			<td><%=link_to "#{i.id}", issue_path(i.id)%></td>
 			<td><%= Project.find(Issue.find(i.id).project_id).name%></td>
 			<td><%= i.created_on.localtime.strftime("%Y-%m-%d")%></td>
 			<td><%= i.subject[0..50]%><%= i.subject.length>50 ? '...' : '' %></td>
 			<td><%= IssueStatus.find(i.status_id).name%></td>
-			<td><%= IssueStatus.find(Setting.plugin_issuecloser['issues_status_to']).name%></td>
-			<td><a href=?id=<%= i.id%>&issue_action=change><%=I18n.t 'make_new_status'%></a></td>
+			<td><%= IssueStatus.find(@to[i.status_id]).name%></td>
+	        <td><%= @days[i.status_id]%></td>
+		
+			<td><a href=?id=<%= i.id%>&issue_action=change&page=<%=params[:page]%>><%=I18n.t 'make_new_status'%></a></td>
 		</tr>
 		<%end%>
 	</tbody>
 </table>
-<%= paginate @issues_to_change_paginated %>
+<%= paginate @issues %>
 

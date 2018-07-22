@@ -18,6 +18,7 @@ ru:
   status_to: Новый статус
   issues_count: Задач всего
   issues_to_be_changed: Найдено задач для изменения
+  wait_days: Период
   helpers:
     page_entries_info:
       more_pages:
