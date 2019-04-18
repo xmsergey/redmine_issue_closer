@@ -1,28 +1,112 @@
-<h1><%= t :settings_h1 %></h1>
-<div class="tabular settings">
-	<p>
-		<%= setting_label(:auto_close) %>
-		<%= check_box_tag('settings[auto_close]', true, @settings[:auto_close]) %>
-	</p>
-	<p>
-		<% statuses = IssueStatus.where('is_closed=?', false).map { |s| [s.name, s.id] } %>
-		<%= setting_label(:issues_status_from) %>
-		<%= select_tag('settings[issues_status_from]',
-		options_for_select(statuses, @settings[:issues_status_from])) %>
-	</p>
-	<p>
-		<% statuses = IssueStatus.where('is_closed=?', true).map { |s| [s.name, s.id] } %>
-		<%= setting_label(:issues_status_to) %>
-		<%= select_tag('settings[issues_status_to]',
-		options_for_select(statuses, @settings[:issues_status_to])) %>
-	</p>
-	<p>
-		<%= setting_label(:auto_close_after_days) %>
-		<%= text_field_tag "settings[auto_close_after_days]", @settings[:auto_close_after_days] %>
-	</p>
-	<hr>
-	<p>
-		<a href=/issuecloser><%= t :settings_manual_change %></a>
-	</p>
-</div>
+<h1><%= t('settings') %></h1>
 
+<table class="list" id="settings_table">
+  <thead>
+  <tr>
+    <th><%= t('setting_auto_close') %></th>
+    <th><%= t('setting_project') %></th>
+    <th><%= t('setting_issues_status_from') %></th>
+    <th><%= t('setting_issues_status_to') %></th>
+    <th><%= t('setting_auto_close_after_days') %></th>
+    <th><%= t('settings_manual_change') %>
+    <th><%= t('settings_remove_row') %>
+  </tr>
+  </thead>
+  <tbody>
+
+  <tr id="template-settings" style="display: none">
+    <td>
+      <%= hidden_field_tag 'settings[projects][][auto_close]', false, disabled: true, class: 'jsCheckbox'  %>
+      <%= check_box_tag '', true, false, disabled: true, class: 'jsCheckbox' %>
+    </td>
+    <td>
+      <% projects = Project.all.map { |project| [project.name, project.id] } %>
+      <%= select_tag 'settings[projects][][project_id]', options_for_select(projects, ''), include_blank: true, disabled: true %>
+    </td>
+    <td>
+      <% statuses = IssueStatus.where('is_closed=?', false).map { |s| [s.name, s.id] } %>
+      <%= select_tag 'settings[projects][][issues_status_from]', options_for_select(statuses), disabled: true %>
+    </td>
+    <td>
+      <% statuses = IssueStatus.where('is_closed=?', true).map { |s| [s.name, s.id] } %>
+      <%= select_tag 'settings[projects][][issues_status_to]', options_for_select(statuses), disabled: true %>
+    </td>
+    <td>
+      <%= text_field_tag 'settings[projects][][auto_close_after_days]', '', disabled: true %>
+    </td>
+    <td>
+      <%= link_to t('settings_change'), 'javascript:void();', class: 'manuallyChange' %>
+    </td>
+    <td>
+      <%= link_to t('settings_remove'), 'javascript:void();', class: 'removeRow' %>
+    </td>
+  </tr>
+
+  <% (settings['projects'] || []).each do |project_settings| %>
+    <tr>
+      <td>
+        <%= hidden_field_tag 'settings[projects][][auto_close]', project_settings['auto_close'], class: 'jsCheckbox' %>
+        <%= check_box_tag '', true, project_settings['auto_close'] == 'true', class: 'jsCheckbox' %>
+      </td>
+      <td>
+        <% projects = Project.all.map { |project| [project.name, project.id] } %>
+        <%= select_tag 'settings[projects][][project_id]', options_for_select(projects, project_settings['project_id']), include_blank: true %>
+      </td>
+      <td>
+        <% statuses = IssueStatus.where('is_closed=?', false).map { |s| [s.name, s.id] } %>
+        <%= select_tag 'settings[projects][][issues_status_from]', options_for_select(statuses, project_settings['issues_status_from']) %>
+      </td>
+      <td>
+        <% statuses = IssueStatus.where('is_closed=?', true).map { |s| [s.name, s.id] } %>
+        <%= select_tag('settings[projects][][issues_status_to]', options_for_select(statuses, project_settings['issues_status_to'])) %>
+      </td>
+      <td>
+        <%= text_field_tag 'settings[projects][][auto_close_after_days]', project_settings['auto_close_after_days'] %>
+      </td>
+      <td>
+        <%= link_to t('settings_change'), 'javascript:void();', class: 'manuallyChange' %>
+      </td>
+      <td>
+        <%= link_to t('settings_remove'), 'javascript:void();', class: 'removeRow' %>
+      </td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+
+<%= link_to 'Add new row', 'javascript:void();', class: 'addNewRow' %>
+
+<script type="text/javascript">
+
+  function addNewRow() {
+    var newRow = $('#template-settings').clone();
+    newRow.removeAttr('id');
+    newRow.find('input, select').prop('disabled', false);
+    $('#settings_table tbody').append(newRow);
+    newRow.show();
+  }
+
+  function removeRow() {
+    $(this).closest('tr').remove();
+  }
+
+  function clickCheckbox() {
+    var checkbox = $(this);
+    checkbox.closest('tr').find('.jsCheckbox[type="hidden"]').val(checkbox.is(':checked'));
+  }
+
+  function manuallyChange() {
+    var params = $(this).closest('tr').find('input, select').serialize();
+
+    window.location = '/issuecloser?' + params;
+  }
+
+  $('body').on('click', '.addNewRow', addNewRow);
+
+  $('body').on('click', '.removeRow', removeRow);
+
+  $('body').on('click', '.jsCheckbox[type="checkbox"]', clickCheckbox);
+
+  $('body').on('click', '.manuallyChange', manuallyChange);
+
+</script>
